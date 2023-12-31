@@ -1,0 +1,26 @@
+---
+- name: SETUP BIG-IP
+  hosts: bigip
+
+  tasks:
+      - name: Create UCS File
+        bigip_ucs_fetch:
+          src: teste_backup.ucs
+          only_create_file: true
+          provider:
+            server: 192.168.117.2
+            user: admin
+            password: Bala100gosto--
+            validate_certs: no
+        delegate_to: localhost
+
+      - name: Download UCS File
+        bigip_ucs_fetch:
+          src: teste_backup.ucs
+          dest: /home/teste/Code Projects/BIGIP-Project/Backups/teste_backup.ucs
+          provider:
+            server: 192.168.117.2
+            user: admin
+            password: Bala100gosto--
+            validate_certs: no
+        delegate_to: localhost
