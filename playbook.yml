@@ -1,6 +1,6 @@
 ---
 - name: SETUP BIG-IP
-  hosts: bigip
+  hosts: localhost
 
   tasks:
       - name: Create UCS File
