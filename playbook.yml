@@ -17,7 +17,7 @@
       - name: Download UCS File
         bigip_ucs_fetch:
           src: teste_backup.ucs
-          dest: /home/teste/Code Projects/BIGIP-Project/Backups/teste_backup.ucs
+          dest: /Backups/teste_backup.ucs
           provider:
             server: 192.168.117.2
             user: admin
