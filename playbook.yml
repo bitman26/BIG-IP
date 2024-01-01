@@ -14,7 +14,7 @@
   tasks:
       - name: Create UCS File
         bigip_ucs_fetch:
-          src: BKP_{{ chg }}_{{ ansible_date_time.iso8601 }}.ucs
+          src: BKP_{{ chg }}_{{ ansible_date_time }}.ucs
           only_create_file: true
           provider:
             server: 192.168.117.2
@@ -25,8 +25,8 @@
 
       - name: Download UCS File
         bigip_ucs_fetch:
-          src: BKP_{{ chg }}_{{ ansible_date_time.iso8601 }}.ucs
-          dest: /Backups/BKP_{{ chg }}_{{ ansible_date_time.iso8601 }}.ucs
+          src: BKP_{{ chg }}_{{ ansible_date_time }}.ucs
+          dest: /Backups/BKP_{{ chg }}_{{ ansible_date_time }}.ucs
           provider:
             server: 192.168.117.2
             user: '{{ username }}'
