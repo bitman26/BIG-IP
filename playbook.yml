@@ -6,11 +6,13 @@
       prompt: Please provide the username
     - name: password
       prompt: password
+    - name: chg
+      prompt: Please provide CHG Number
     
   tasks:
       - name: Create UCS File
         bigip_ucs_fetch:
-          src: BKP_"{{ansible_date_time}}".ucs
+          src: BKP_'{{ chg }}'.ucs
           only_create_file: true
           provider:
             server: 192.168.117.2
@@ -22,7 +24,7 @@
       - name: Download UCS File
         bigip_ucs_fetch:
           src: teste_backup.ucs
-          dest: /Backups/BKP_"{{ansible_date_time}}".ucs
+          dest: /Backups/BKP_'{{ chg }}".ucs
           provider:
             server: 192.168.117.2
             user: '{{ username }}'
