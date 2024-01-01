@@ -1,26 +1,33 @@
 ---
 - name: SETUP BIG-IP
   hosts: localhost
-
+  vars_prompt:
+    - name: username
+      prompt: Please provide the username
+    - name: password
+      prompt: password
+    - name: change-number
+      prompt: What is CHG Number
+    
   tasks:
       - name: Create UCS File
         bigip_ucs_fetch:
-          src: BKP_${change-number}_"{{ansible_date_time}}".ucs
+          src: BKP_'{{ change-number }}'_"{{ansible_date_time}}".ucs
           only_create_file: true
           provider:
             server: 192.168.117.2
-            user: ${usuario}
-            password: ${password}
+            user: '{{ username }}'
+            password: '{{ password }}'
             validate_certs: no
         delegate_to: localhost
 
       - name: Download UCS File
         bigip_ucs_fetch:
           src: teste_backup.ucs
-          dest: /Backups/BKP_${change-number}_"{{ansible_date_time}}".ucs
+          dest: /Backups/BKP_'{{ change-number }}'_"{{ansible_date_time}}".ucs
           provider:
             server: 192.168.117.2
-            user: ${usuario}
-            password: ${password}
+            user: '{{ username }}'
+            password: '{{ password }}'
             validate_certs: no
         delegate_to: localhost
