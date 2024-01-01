@@ -9,8 +9,8 @@
           only_create_file: true
           provider:
             server: 192.168.117.2
-            user: admin
-            password: Bala100gosto--
+            user: ${usuario}
+            password: ${password}
             validate_certs: no
         delegate_to: localhost
 
@@ -20,7 +20,7 @@
           dest: /Backups/teste_backup.ucs
           provider:
             server: 192.168.117.2
-            user: admin
-            password: Bala100gosto--
+            user: ${usuario}
+            password: ${password}
             validate_certs: no
         delegate_to: localhost
