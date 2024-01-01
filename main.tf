@@ -1,5 +1,3 @@
-variable password {}
-
 terraform {
   required_providers {
     bigip = {
