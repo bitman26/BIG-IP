@@ -6,13 +6,11 @@
       prompt: Please provide the username
     - name: password
       prompt: password
-    - name: chg
-      prompt: Please provide CHG Number
     
   tasks:
       - name: Create UCS File
         bigip_ucs_fetch:
-          src: BKP_'{{ chg }}'.ucs
+          src: BKP_BIG-IP.ucs
           only_create_file: true
           provider:
             server: 192.168.117.2
@@ -24,7 +22,7 @@
       - name: Download UCS File
         bigip_ucs_fetch:
           src: teste_backup.ucs
-          dest: /Backups/BKP_'{{ chg }}".ucs
+          dest: /Backups/BKP_BIG-IP.ucs
           provider:
             server: 192.168.117.2
             user: '{{ username }}'
