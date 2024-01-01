@@ -6,13 +6,11 @@
       prompt: Please provide the username
     - name: password
       prompt: password
-    - name: change-number
-      prompt: What is CHG Number
     
   tasks:
       - name: Create UCS File
         bigip_ucs_fetch:
-          src: BKP_'{{ change-number }}'_"{{ansible_date_time}}".ucs
+          src: BKP_"{{ansible_date_time}}".ucs
           only_create_file: true
           provider:
             server: 192.168.117.2
