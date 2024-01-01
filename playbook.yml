@@ -4,9 +4,12 @@
   vars_prompt:
     - name: username
       prompt: Please provide the username
+      
     - name: password
       prompt: password
+      
     - name: chg
+      prompt: Change Number
     
   tasks:
       - name: Create UCS File
