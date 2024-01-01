@@ -22,7 +22,7 @@
       - name: Download UCS File
         bigip_ucs_fetch:
           src: teste_backup.ucs
-          dest: /Backups/BKP_'{{ change-number }}'_"{{ansible_date_time}}".ucs
+          dest: /Backups/BKP_"{{ansible_date_time}}".ucs
           provider:
             server: 192.168.117.2
             user: '{{ username }}'
