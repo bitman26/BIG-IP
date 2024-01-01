@@ -1,3 +1,6 @@
+variable password {}
+variable user-admin {}
+
 terraform {
   required_providers {
     bigip = {
