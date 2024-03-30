@@ -1,29 +1,43 @@
 pipeline {
-  agent any
-  stages {
-    stage('GIT Stage') {
-      steps {
-        git(branch: 'main', credentialsId: 'jenkins-token', url: 'https://github.com/bitman26/BIG-IP.git')
-      }
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-hub'
+        DOCKER_IMAGE_NAME = 'bitman26/jenkins-kubernetes'
     }
 
-    stage('Running Backup BIG-IP') {
-      steps {
-        ansiblePlaybook(installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml', extras: '--extra-vars "username=${usuario} password=${password} chg=${change}"')
-      }
+    stages {
+        stage('Clonar repositório') {
+            steps {
+                git(branch: 'main', credentialsId: 'jenkins-ssh-git', url: 'git@github.com:bitman26/Jenkins-Kubernetes.git')
+            }
+        }
+
+        stage('Construir imagem Docker') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Push para Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS_ID) {
+                        docker.image("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
     }
 
-    stage('Terraform init') {
-      steps {
-        sh 'terraform init'
-      }
+    post {
+        success {
+            echo 'Pipeline executada com sucesso!'
+        }
+        failure {
+            echo 'Falha na execução da pipeline.'
+        }
     }
-
-    stage('Terraform Deploy') {
-      steps {
-        sh 'terraform ${action} -var="user-admin=${usuario}" -var="password=${password}" --auto-approve'
-      }
-    }
-
-  }
 }
