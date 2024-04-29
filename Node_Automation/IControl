@@ -1,0 +1,5 @@
+#Habilitar maquina no Pool
+curl -sku admin:Bala100gosto -H "Content-Type: application/json" -X PATCH https://10.121.87.10/mgmt/tm/ltm/node/~Common~terraform_node1 -d '{"session":"user-enabled"}'
+
+#Desabilitar maquina do Pool
+curl -sku admin:Bala100gosto -H "Content-Type: application/json" -X PATCH https://10.121.87.10/mgmt/tm/ltm/node/~Common~terraform_node1 -d '{"session":"user-disabled"}'

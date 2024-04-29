@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Deploy') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'jenkins-bigipteste', passwordVariable: 'F5_PASSWORD', usernameVariable: 'F5_USER')]) {
+                        sh '''
+                            curl -sku "${F5_USER}:${F5_PASSWORD}" \
+                                 -H 'Content-Type: application/json' \
+                                 -X PATCH \
+                                 https://10.121.87.10/mgmt/tm/ltm/node/~Common~${node} \
+                                 -d '{"session":"user-'${action}'"}'
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Obter e inserir dados no banco de dados') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'jenkins-bigipteste', passwordVariable: 'F5_PASSWORD', usernameVariable: 'F5_USER')]) {
+                        // Obter os dados da API e filtrar usando jq
+                        def jsonData = sh(script: 'curl -sku "${F5_USER}:${F5_PASSWORD}" https://10.121.87.10/mgmt/tm/ltm/node/stats -H "Content-Type: application/json" | jq -r \'.entries[] | .nestedStats.entries.tmName.description + "," + .nestedStats.entries.addr.description + "," + .nestedStats.entries["status.enabledState"].description\'', returnStdout: true).trim()
+
+                        // Dividir os dados em linhas
+                        def lines = jsonData.split('\n')
+
+                        // Iterar sobre cada linha
+                        lines.each { line ->
+                            // Extrair os valores de cada linha
+                            def (tmName, addr, enabledState) = line.split(',')
+
+                            // Verificar se os dados já existem no banco
+                            def exists = sh(script: "PGPASSWORD=bala100gosto psql -h 10.121.87.71 -p 5432 -U postgres -d f5 -tAc \"SELECT EXISTS (SELECT 1 FROM nodes WHERE tmname='${tmName}' AND addr='${addr}')\"", returnStdout: true).trim()
+
+                            if (exists == 't') {
+                                // Se os dados existirem, executar o comando UPDATE
+                                sh(script: "PGPASSWORD=bala100gosto psql -h 10.121.87.71 -p 5432 -U postgres -d f5 -c \"UPDATE nodes SET enabledstate='${enabledState}' WHERE tmname='${tmName}' AND addr='${addr}'\"")
+                                echo "Dados atualizados no banco de dados com sucesso!"
+                            } else {
+                                // Se os dados não existirem, executar o comando COPY para inseri-los
+                                def insertCommand = """echo "${tmName},${addr},${enabledState}" | PGPASSWORD=bala100gosto psql -h 10.121.87.71 -p 5432 -U postgres -d f5 -c "COPY nodes (tmname, addr, enabledstate) FROM STDIN WITH CSV" """
+                                sh(insertCommand)
+                                echo "Dados inseridos no banco de dados com sucesso!"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

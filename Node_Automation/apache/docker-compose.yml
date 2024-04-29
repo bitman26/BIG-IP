@@ -1,0 +1,37 @@
+version: "3"
+
+networks:
+  docker-default:
+     external: true
+
+volumes:
+  postgress:
+    external: true
+
+services:
+   apache:
+       image: php-apache:7.2.1
+       volumes:
+        - ./www:/var/www/html/
+       ports:
+        - 80:80
+       environment:
+         POSTGRES_HOST: db
+         POSTGRES_DB: f5
+         POSTGRES_USER: postgres
+         POSTGRES_PASSWORD: bala100gosto
+       networks:
+         - docker-default
+
+   db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    volumes:
+     - postgress:/var/lib/postgresql/data
+    ports:
+     - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: bala100gosto
+    networks:
+      - docker-default
