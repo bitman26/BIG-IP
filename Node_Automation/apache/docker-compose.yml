@@ -18,6 +18,7 @@ services:
        environment:
          POSTGRES_HOST: db
          POSTGRES_DB: f5
+         POSTGRES_DB_USERS: autentication
          POSTGRES_USER: postgres
          POSTGRES_PASSWORD: bala100gosto
        networks:
