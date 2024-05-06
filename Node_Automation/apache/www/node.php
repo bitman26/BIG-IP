@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Verifica se o usuário não está autenticado
+if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
+    // Redireciona para a página de login
+    header("Location: index.php");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,21 +39,26 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav mr-auto">
             <!-- Links da barra de navegação -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link" href="home.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="node.html">Node Manager</a>
+                <a class="nav-link" href="node.php">Node Manager</a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="nodestatus.php">Node Status</a>
             </li>
             <!-- Adicione outros links conforme necessário -->
         </ul>
+        <!-- Botão de logoff -->
+        <form class="form-inline my-2 my-lg-0" action="logout.php" method="post">
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Logoff</button>
+        </form>
     </div>
 </nav>
+
 
 <!-- Conteúdo principal -->
 <div class="container mt-5">
